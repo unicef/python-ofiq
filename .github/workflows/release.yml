@@ -1,0 +1,82 @@
+name: Release to PyPI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  download-artifacts:
+    name: Download CI artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download wheels from CI
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: ci.yml
+          commit: ${{ github.sha }}
+          name: wheels-ubuntu-latest
+          path: dist/
+
+      - name: Download sdist from CI
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: ci.yml
+          commit: ${{ github.sha }}
+          name: sdist
+          path: dist/
+
+      - name: List artifacts
+        run: ls -la dist/
+
+      - name: Upload to release job
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dist
+          path: dist/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: download-artifacts
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/python-ofiq
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  create-github-release:
+    name: Create GitHub Release
+    needs: publish-pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dist
+          path: dist/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}

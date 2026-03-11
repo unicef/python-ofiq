@@ -1,0 +1,66 @@
+[build-system]
+requires = ["scikit-build-core>=0.5", "pybind11>=2.11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "python-ofiq"
+version = "0.1.0"
+description = "Python bindings for OFIQ (Open Source Face Image Quality)"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "python-ofiq contributors"}
+]
+keywords = ["face", "image", "quality", "biometrics", "OFIQ", "ISO-29794-5"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C++",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "opencv-python-headless>=4.5",
+]
+
+[project.scripts]
+python-ofiq = "ofiq.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/unicef/python-ofiq"
+Repository = "https://github.com/unicef/python-ofiq"
+Documentation = "https://github.com/unicef/python-ofiq#readme"
+
+[tool.scikit-build]
+wheel.packages = ["src/ofiq"]
+cmake.build-type = "Release"
+cmake.args = ["-DCMAKE_POSITION_INDEPENDENT_CODE=ON"]
+
+[tool.cibuildwheel]
+build = "cp311-* cp312-*"
+skip = "*-win32 *-musllinux* *i686* *-win_arm64 *-macosx*"
+test-requires = ["pytest", "numpy", "opencv-python-headless"]
+test-command = "pytest {project}/tests -v --tb=short"
+
+[tool.cibuildwheel.linux]
+before-all = "bash {project}/scripts/build_ofiq.sh"
+manylinux-x86_64-image = "manylinux_2_28"
+repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
+environment = { OFIQ_ROOT = "/opt/OFIQ-Project/install_x86_64_linux/Release", OFIQ_DATA_DIR = "/opt/OFIQ-Project/data" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

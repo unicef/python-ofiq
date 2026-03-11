@@ -1,0 +1,49 @@
+"""Type stubs for the C++ extension module."""
+
+from typing import overload
+import numpy as np
+import numpy.typing as npt
+
+__version__: str
+__ofiq_version__: str
+
+class OFIQError(Exception): ...
+class ConfigError(OFIQError): ...
+class QualityError(OFIQError): ...
+class FaceDetectionError(QualityError): ...
+class LandmarkError(QualityError): ...
+class SegmentationError(QualityError): ...
+
+class OFIQ:
+    """OFIQ face image quality assessment interface.
+
+    Not thread-safe. Use one instance per thread or serialize access.
+    """
+
+    @overload
+    def __init__(self) -> None: ...
+    @overload
+    def __init__(self, config_dir: str) -> None: ...
+    @overload
+    def __init__(self, config_dir: str, config_file: str) -> None: ...
+    def __init__(self, config_dir: str = "", config_file: str = "ofiq_config.jaxn") -> None: ...
+
+    def scalar_quality(self, image_rgb: npt.NDArray[np.uint8]) -> float:
+        """Return unified quality score in [0, 100]. Higher is better."""
+        ...
+
+    @overload
+    def vector_quality(
+        self, image_rgb: npt.NDArray[np.uint8]
+    ) -> dict[str, float | None]: ...
+    @overload
+    def vector_quality(
+        self, image_rgb: npt.NDArray[np.uint8], include_raw: bool
+    ) -> dict[str, float | None] | dict[str, dict[str, float] | None]: ...
+    def vector_quality(
+        self,
+        image_rgb: npt.NDArray[np.uint8],
+        include_raw: bool = False,
+    ) -> dict[str, float | None] | dict[str, dict[str, float] | None]: ...
+
+    def __repr__(self) -> str: ...
