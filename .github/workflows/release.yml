@@ -5,42 +5,44 @@ on:
     tags:
       - "v*.*.*"
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
 jobs:
-  download-artifacts:
-    name: Download CI artifacts
+  build-wheels:
+    name: Build wheels
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - name: Download wheels from CI
-        uses: dawidd6/action-download-artifact@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          workflow: ci.yml
-          commit: ${{ github.sha }}
-          name: wheels-ubuntu-latest
-          path: dist/
+          python-version: "3.11"
 
-      - name: Download sdist from CI
-        uses: dawidd6/action-download-artifact@v3
-        with:
-          workflow: ci.yml
-          commit: ${{ github.sha }}
-          name: sdist
-          path: dist/
+      - name: Install cibuildwheel
+        run: pip install cibuildwheel==2.16.5
 
-      - name: List artifacts
-        run: ls -la dist/
+      - name: Build wheels
+        run: cibuildwheel --output-dir dist
+        env:
+          CIBW_BUILD_VERBOSITY: 1
 
-      - name: Upload to release job
+      - name: Upload dist
         uses: actions/upload-artifact@v4
         with:
           name: release-dist
-          path: dist/
+          path: dist/*.whl
+          retention-days: 1
 
   publish-pypi:
     name: Publish to PyPI
-    needs: download-artifacts
+    needs: build-wheels
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: pypi
       url: https://pypi.org/p/python-ofiq
@@ -61,11 +63,12 @@ jobs:
     name: Create GitHub Release
     needs: publish-pypi
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download dist
         uses: actions/download-artifact@v4
@@ -74,7 +77,7 @@ jobs:
           path: dist/
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/*
           generate_release_notes: true
