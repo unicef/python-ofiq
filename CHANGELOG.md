@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ofiq.setup()` and `ofiq.resolve_data_dir()` Python API
 - Auto-discovery of data directory via `OFIQ_DATA_DIR` env var or `~/.ofiq/data`
 - Type stubs for IDE support
-- Prebuilt wheels for Linux x86_64 (manylinux_2_28), Python 3.11 and 3.12
+- Prebuilt wheels for Linux x86_64 (manylinux_2_28), Python 3.11, 3.12, 3.13 and 3.14
 
 ### Compatibility
 
