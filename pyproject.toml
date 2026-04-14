@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "python-ofiq"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python bindings for OFIQ (Open Source Face Image Quality)"
 readme = "README.md"
 license = {text = "MIT"}
