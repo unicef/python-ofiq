@@ -14,7 +14,7 @@ RUN /opt/python/cp311-cp311/bin/python -m build --wheel --outdir /wheels/raw
 
 RUN auditwheel repair /wheels/raw/*.whl -w /wheels/final
 
-FROM python:3.11-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
