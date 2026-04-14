@@ -24,7 +24,7 @@ jobs:
           python-version: "3.14"
 
       - name: Install cibuildwheel
-        run: pip install cibuildwheel==2.16.5
+        run: pip install cibuildwheel
 
       - name: Build wheels
         run: cibuildwheel --output-dir dist
