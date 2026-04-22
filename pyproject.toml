@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "python-ofiq"
-version = "0.2.1"
+version = "0.2.2"
 description = "Python bindings for OFIQ (Open Source Face Image Quality)"
 readme = "README.md"
 license = {text = "MIT"}
@@ -53,7 +53,7 @@ cmake.args = ["-DCMAKE_POSITION_INDEPENDENT_CODE=ON"]
 
 [tool.cibuildwheel]
 build = "cp311-* cp312-* cp313-* cp314-*"
-skip = "*-win32 *-musllinux* *i686* *-win_arm64 *-macosx*"
+skip = "*-win32 *-musllinux* *i686* *-win_arm64"
 test-requires = ["pytest", "numpy", "opencv-python-headless"]
 test-command = "pytest {project}/tests -v --tb=short"
 
