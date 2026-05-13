@@ -11,9 +11,14 @@ concurrency:
 
 jobs:
   build-wheels:
-    name: Build wheels
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
+    name: Build wheels (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14]
 
     steps:
       - uses: actions/checkout@v6
@@ -34,7 +39,7 @@ jobs:
       - name: Upload dist
         uses: actions/upload-artifact@v4
         with:
-          name: release-dist
+          name: release-dist-${{ matrix.os }}
           path: dist/*.whl
           retention-days: 1
 
@@ -53,7 +58,8 @@ jobs:
       - name: Download dist
         uses: actions/download-artifact@v4
         with:
-          name: release-dist
+          pattern: release-dist-*
+          merge-multiple: true
           path: dist/
 
       - name: Publish to PyPI
@@ -73,7 +79,8 @@ jobs:
       - name: Download dist
         uses: actions/download-artifact@v4
         with:
-          name: release-dist
+          pattern: release-dist-*
+          merge-multiple: true
           path: dist/
 
       - name: Create Release

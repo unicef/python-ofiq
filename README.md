@@ -15,6 +15,11 @@ Python bindings for [OFIQ](https://github.com/BSI-OFIQ/OFIQ-Project) (Open Sourc
 pip install python-ofiq
 ```
 
+Prebuilt wheels are available for:
+
+- Linux x86_64 (manylinux_2_28)
+- macOS arm64 (Apple Silicon, macOS 14+)
+
 Download OFIQ models and config (~400 MB):
 
 ```bash
@@ -153,12 +158,33 @@ OFIQ_DATA_DIR=/custom/path python-ofiq setup
 
 ### Build from source
 
+**Linux** (via Docker, produces manylinux wheel):
+
 ```bash
 git clone https://github.com/unicef/python-ofiq.git
 cd python-ofiq
 
 docker build -f docker/Dockerfile -t python-ofiq-test .
 docker run -it python-ofiq-test python -c "from ofiq import OFIQ; print('OK')"
+```
+
+**macOS** (Apple Silicon):
+
+```bash
+brew install cmake git
+git clone https://github.com/unicef/python-ofiq.git
+cd python-ofiq
+
+bash scripts/build_ofiq.sh
+export OFIQ_ROOT="$HOME/OFIQ-Project/install_arm64_mac/Release"
+pip install -e .
+```
+
+Or build a wheel directly with cibuildwheel:
+
+```bash
+pip install cibuildwheel
+cibuildwheel --platform macos --output-dir wheelhouse
 ```
 
 ### Run tests
