@@ -44,6 +44,8 @@ set(OFIQ_LIB_DIR "${OFIQ_ROOT}/lib")
 
 if(DEFINED ENV{OFIQ_SOURCE_DIR})
     set(OFIQ_SOURCE_INCLUDE_DIR "$ENV{OFIQ_SOURCE_DIR}/OFIQlib/include")
+elseif(APPLE)
+    set(OFIQ_SOURCE_INCLUDE_DIR "$ENV{HOME}/OFIQ-Project/OFIQlib/include")
 else()
     set(OFIQ_SOURCE_INCLUDE_DIR "/opt/OFIQ-Project/OFIQlib/include")
 endif()
