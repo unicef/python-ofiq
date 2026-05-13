@@ -33,6 +33,8 @@ message(STATUS "python-ofiq version: ${OFIQPY_VERSION}")
 
 if(DEFINED ENV{OFIQ_ROOT})
     set(OFIQ_ROOT "$ENV{OFIQ_ROOT}")
+elseif(APPLE)
+    set(OFIQ_ROOT "$ENV{HOME}/OFIQ-Project/install_arm64_mac/Release")
 else()
     set(OFIQ_ROOT "/opt/OFIQ-Project/install_x86_64_linux/Release")
 endif()
@@ -64,11 +66,18 @@ target_compile_definitions(_core PRIVATE OFIQPY_VERSION="${OFIQPY_VERSION}")
 
 target_link_libraries(_core PRIVATE Python3::Module ofiq_lib)
 
+if(APPLE)
+    set(_core_install_rpath "@loader_path;${OFIQ_LIB_DIR}")
+else()
+    set(_core_install_rpath "${OFIQ_LIB_DIR}")
+endif()
+
 set_target_properties(_core PROPERTIES
     PREFIX ""
     BUILD_WITH_INSTALL_RPATH TRUE
-    INSTALL_RPATH "${OFIQ_LIB_DIR}"
+    INSTALL_RPATH "${_core_install_rpath}"
     INSTALL_RPATH_USE_LINK_PATH TRUE
+    MACOSX_RPATH TRUE
 )
 
 install(TARGETS _core DESTINATION ofiq)
