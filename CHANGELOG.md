@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `scripts/build_ofiq.sh` is now platform-aware (Linux and macOS)
 - `CMakeLists.txt` defaults `OFIQ_ROOT` based on platform and sets platform-appropriate RPATH (`@loader_path` on macOS, `$ORIGIN` on Linux)
+- Upgraded the bundled OFIQ C++ library from v1.1.2 to v1.2.0
+
+### Compatibility
+
+- Built against OFIQ C++ library version 1.2.0 (previously 1.1.2). Quality-measure dict keys are
+  unchanged: the binding keeps its own measure-name mapping, so OFIQ 1.2.0's new ISO/IEC 25722 measure
+  names (e.g. `NoCompressionArtifacts`, `HeadPoseYawFrontal`) are intentionally not adopted, preserving
+  the existing Python API.
 
 ## [0.1.0] - 2026-03-11
 
