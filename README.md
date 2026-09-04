@@ -152,7 +152,8 @@ OFIQ_DATA_DIR=/custom/path python-ofiq setup
 
 | python-ofiq | OFIQ C++ |
 |-------------|----------|
-| 0.1.x       | 1.1.2    |
+| 0.1.x–0.3.x | 1.1.2    |
+| 0.4.x       | 1.2.0    |
 
 ## Development
 

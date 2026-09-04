@@ -17,7 +17,7 @@ namespace py = pybind11;
 #ifndef OFIQPY_VERSION
 #define OFIQPY_VERSION "0.0.0"
 #endif
-#define OFIQPY_OFIQ_VERSION "1.1.2"
+#define OFIQPY_OFIQ_VERSION "1.2.0"
 
 class OFIQError : public std::runtime_error {
 public:

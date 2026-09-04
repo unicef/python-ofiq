@@ -3,7 +3,7 @@ set -e
 
 echo "=== Building OFIQ from source ==="
 
-OFIQ_VERSION="v1.1.2"
+OFIQ_VERSION="v1.2.0"
 
 UNAME_S="$(uname -s)"
 case "$UNAME_S" in
